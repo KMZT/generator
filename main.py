@@ -31,7 +31,7 @@ async def check_cookies_concurrently(n):
 # Главная функция для запуска асинхронных задач
 async def main():
     while True:
-        await check_cookies_concurrently(1000)  # Проверяем 1000 куков одновременно
+        await check_cookies_concurrently(100)  # Проверяем 1000 куков одновременно
 
 # Точка входа в скрипт
 if __name__ == "__main__":

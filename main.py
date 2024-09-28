@@ -1,4 +1,4 @@
-import requests
+from requests import get
 import time
 import random
 while True:

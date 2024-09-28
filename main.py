@@ -32,8 +32,8 @@ async def check_cookies_concurrently(n):
 # Главная функция для запуска асинхронных задач
 async def main():
     while True:
-        print("invalid": invalid)
-        print("valid": valid)
+        print(f"invalid: {invalid}")
+        print(f"valid: {valid}")
         await asyncio.sleep(10)
     while True:
         await check_cookies_concurrently(500)  # Проверяем 1000 куков одновременно

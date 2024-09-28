@@ -1,4 +1,5 @@
-import requests, time
+import requests
+import time
 while True:
   valid_letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
   rancookie = ''.join((random.choice(valid_letters) for i in range(1356)))
